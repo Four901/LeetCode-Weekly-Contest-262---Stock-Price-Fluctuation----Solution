@@ -1,41 +1,61 @@
 class Solution {
 public:
-    vector<int> twoOutOfThree(vector<int>& nums1, vector<int>& nums2, vector<int>& nums3)
+
+    int minOperations(vector<vector<int>>& vec, int x) {
+        
+        
+        
+        int n=vec.size();
+        int m=vec[0].size();
+        vector<int> arr(n * m, 0);
+ 
+       for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            arr[i * m + j] = vec[i][j];
+            if (vec[i][j] % x != vec[0][0]%x) {
+                return -1;
+              }
+           }
+        }
+ 
+  
+    sort(arr.begin(), arr.end());
+ 
+    int mid = arr[(n * m) / 2];
+ 
+
+    int ans = 0;
+    for (int i = 0; i < n * m; ++i)
+        ans += abs(arr[i] - mid) / x;
+ 
+    if((n*m)%2!=0)
     {
-        set<int>s1,s2,s3;
-        map<int,int>mp;
-        for(auto v:nums1)
+        int ans1;
+        if((n*m)/2-1>=0)
         {
-            s1.insert(v);
+              mid = arr[( (n * m) / 2) - 1];
+        ans1 = 0;
+       for (int i = 0; i < n * m; ++i)
+          ans1 += abs(arr[i] - mid) / x;
+ 
+       ans = min(ans, ans1);
         }
-        for(auto v:nums2)
+       
+        if((n*m)/2+1<n*m)
         {
-            s2.insert(v);
+             mid = arr[( (n * m) / 2) + 1];
+            ans1 = 0;
+           for (int i = 0; i < n * m; ++i)
+            ans1 += abs(arr[i] - mid) / x;
         }
-        for(auto v:nums3)
-        {
-            s3.insert(v);
-        }
-        for(auto v:s1)
-        {
-            mp[v]++;
-        }
-        for(auto v:s2)
-        {
-            mp[v]++;
-        }
-        for(auto v:s3)
-        {
-            mp[v]++;
-        }
-        vector<int>ans;
-        for(auto v:mp)
-        {
-            if(v.second>=2)
-            {
-                ans.push_back(v.first);
-            }
-        }
-        return ans;
+      
+ 
+       ans = min(ans, ans1);
+    }
+      
+    
+ 
+
+    return ans;
     }
 };
