@@ -1,61 +1,62 @@
-class Solution {
+class StockPrice {
 public:
-
-    int minOperations(vector<vector<int>>& vec, int x) {
+    unordered_map<int,int>track;
+    set<pair<int,int> >st;
+    int maxtimestamp;
+    int maxtimestampval;
+    StockPrice() {
         
-        
-        
-        int n=vec.size();
-        int m=vec[0].size();
-        vector<int> arr(n * m, 0);
- 
-       for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j) {
-            arr[i * m + j] = vec[i][j];
-            if (vec[i][j] % x != vec[0][0]%x) {
-                return -1;
-              }
-           }
-        }
- 
-  
-    sort(arr.begin(), arr.end());
- 
-    int mid = arr[(n * m) / 2];
- 
-
-    int ans = 0;
-    for (int i = 0; i < n * m; ++i)
-        ans += abs(arr[i] - mid) / x;
- 
-    if((n*m)%2!=0)
-    {
-        int ans1;
-        if((n*m)/2-1>=0)
-        {
-              mid = arr[( (n * m) / 2) - 1];
-        ans1 = 0;
-       for (int i = 0; i < n * m; ++i)
-          ans1 += abs(arr[i] - mid) / x;
- 
-       ans = min(ans, ans1);
-        }
-       
-        if((n*m)/2+1<n*m)
-        {
-             mid = arr[( (n * m) / 2) + 1];
-            ans1 = 0;
-           for (int i = 0; i < n * m; ++i)
-            ans1 += abs(arr[i] - mid) / x;
-        }
-      
- 
-       ans = min(ans, ans1);
     }
-      
     
- 
-
-    return ans;
+    void update(int timestamp, int price)
+    {
+        if(track.find(timestamp)!=track.end())
+        {
+            
+            st.erase({track[timestamp],timestamp});
+            track[timestamp]=price;
+            st.insert({price,timestamp});
+            if(maxtimestamp<=timestamp)
+            {
+                maxtimestamp=timestamp;
+                maxtimestampval=price;
+            }
+        }
+        else
+        {
+            track[timestamp]=price;
+            st.insert({price,timestamp});
+            if(maxtimestamp<timestamp)
+            {
+                maxtimestamp=timestamp;
+                maxtimestampval=price;
+            }
+            
+        }
+    }
+    
+    int current() {
+        return maxtimestampval;
+    }
+    
+    int maximum() 
+    {
+        auto val= *st.rbegin();
+        return val.first;
+    }
+    
+    int minimum()
+    {
+        auto val= *st.begin();
+        return val.first;
     }
 };
+
+/**
+ * Your StockPrice object will be instantiated and called as such:
+ * StockPrice* obj = new StockPrice();
+ * obj->update(timestamp,price);
+ * int param_2 = obj->current();
+ * int param_3 = obj->maximum();
+ * int param_4 = obj->minimum();
+ */
